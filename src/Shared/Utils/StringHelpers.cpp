@@ -209,7 +209,7 @@ bool StringHelpers::isDecimalNumber(const std::string& str, std::optional<char> 
         expression = std::regex("^[0-9]+$");
     }
     else {
-        std::string regex_str = "^[0-9]+([" + std::string(1,*number_seperator) + "0-9]?[0-9]+)*$";
+        std::string regex_str = "^[0-9]+(" + std::string(1, *number_seperator) + "[0-9]+)*$";
         expression = std::regex(regex_str);
     }
 

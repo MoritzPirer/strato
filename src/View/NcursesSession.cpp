@@ -21,13 +21,20 @@ NcursesSession::NcursesSession() {
     use_default_colors(); 
 
     /// colors for rendering
-    init_pair(1, -1,   -1); // Text Normal
-    init_pair(2, COLOR_MAGENTA, -1); // Text Highlight
-    init_pair(3, COLOR_YELLOW,  -1); // changed file
-    init_pair(4, COLOR_RED,     -1); // new file
-    init_pair(5, COLOR_GREEN,   -1); // saved file
-    init_pair(6, COLOR_BLUE,    -1); // ui element
-    init_pair(7, -1, COLOR_BLUE); // strong highlight
+    init_pair(COLOR_NORMAL, -1,   -1); 
+    init_pair(COLOR_WEAK_HIGHLIGHT, COLOR_MAGENTA, -1);
+    init_pair(COLOR_MEDIUM_HIGHLIGHT, COLOR_BLUE,    -1);
+    init_pair(COLOR_STRONG_HIGHLIGHT, -1, COLOR_BLUE);
+
+    init_pair(COLOR_FILE_CHANGED, COLOR_YELLOW,  -1);
+    init_pair(COLOR_FILE_SAVED, COLOR_GREEN,   -1);
+    init_pair(COLOR_FILE_NEW, COLOR_RED,     -1); 
+
+    init_pair(COLOR_CODE_COMMENT, COLOR_GREEN,  -1); 
+    init_pair(COLOR_CODE_KEYWORD, COLOR_BLUE,  -1);
+    init_pair(COLOR_CODE_BUILTIN, COLOR_MAGENTA,  -1);
+    init_pair(COLOR_CODE_STRING, COLOR_YELLOW,  -1);
+    init_pair(COLOR_CODE_NUMBER, COLOR_CYAN,  -1);
 }
 
 NcursesSession::~NcursesSession() {

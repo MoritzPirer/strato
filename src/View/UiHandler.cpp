@@ -30,42 +30,62 @@ void UiHandler::setRole(TextRole role) {
     
     switch (role) {
     case TextRole::NORMAL_TEXT: {
-        attron(COLOR_PAIR(1));
+        attron(COLOR_PAIR(COLOR_NORMAL));
         break;
     }
 
-    case TextRole::CODE_KEYWORD:
     case TextRole::WEAK_HIGHLIGHT: {
-        attron(COLOR_PAIR(2));
+        attron(COLOR_PAIR(COLOR_WEAK_HIGHLIGHT));
         break;
     }
     
-    case TextRole::CODE_NUMBER_LITERAL:
-    case TextRole::FILE_CHANGED: {
-        attron(COLOR_PAIR(3));
-        break;
-    }
-    
-    case TextRole::CODE_COMMENT:
-    case TextRole::FILE_NEW: {
-        attron(COLOR_PAIR(4));
-        break;
-    }
-    
-    case TextRole::CODE_STRING_LITERAL:
-    case TextRole::FILE_SAVED: {
-        attron(COLOR_PAIR(5));
-        break;
-    }
-    
-    case TextRole::CODE_BUILTIN:
     case TextRole::MEDIUM_HIGHLIGHT: {
-        attron(COLOR_PAIR(6));
+        attron(COLOR_PAIR(COLOR_MEDIUM_HIGHLIGHT));
         break;
     }
 
     case TextRole::STRONG_HIGHLIGHT: {
-        attron(COLOR_PAIR(7));
+        attron(COLOR_PAIR(COLOR_STRONG_HIGHLIGHT));
+        break;
+    }
+    
+    case TextRole::FILE_CHANGED: {
+        attron(COLOR_PAIR(COLOR_FILE_CHANGED));
+        break;
+    }
+    
+    case TextRole::FILE_NEW: {
+        attron(COLOR_PAIR(COLOR_FILE_NEW));
+        break;
+    }
+    
+    case TextRole::FILE_SAVED: {
+        attron(COLOR_PAIR(COLOR_FILE_SAVED));
+        break;
+    }
+
+    case TextRole::CODE_KEYWORD: {
+        attron(COLOR_PAIR(COLOR_CODE_KEYWORD));
+        break;
+    }
+
+    case TextRole::CODE_NUMBER_LITERAL: {
+        attron(COLOR_PAIR(COLOR_CODE_NUMBER));
+        break;
+    }
+
+    case TextRole::CODE_COMMENT: {
+        attron(COLOR_PAIR(COLOR_CODE_COMMENT));
+        break;
+    }
+
+    case TextRole::CODE_STRING_LITERAL: {
+        attron(COLOR_PAIR(COLOR_CODE_STRING));
+        break;
+    }
+
+    case TextRole::CODE_BUILTIN: {
+        attron(COLOR_PAIR(COLOR_CODE_BUILTIN));
         break;
     }
 
