@@ -4,14 +4,20 @@
 #include "../../../inc/Shared/Utils/StringHelpers.hpp"
 #include "../../../inc/Controller/Rendering/RenderPipeline.hpp"
 #include "../../../inc/Controller/Rendering/MarkdownInterpreter.hpp"
+#include "../../../inc/Controller/Rendering/CodeInterpreter.hpp"
 
 using std::vector, std::string;
 
 TextRenderer::TextRenderer(const EditorState& state): m_state{state} {}
 
 vector<vector<VisualSegment>> TextRenderer::renderVisibleText(ScreenSize text_area_size) {
+    // RenderPipeline pipeline = RenderPipeline(
+    //     std::make_shared<MarkdownInterpreter>(),
+    //     text_area_size.width
+    // );
+
     RenderPipeline pipeline = RenderPipeline(
-        std::make_shared<MarkdownInterpreter>(),
+        std::make_shared<CodeInterpreter>(CodeHighlightInfo::testPython()),
         text_area_size.width
     );
 

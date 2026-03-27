@@ -17,6 +17,11 @@ enum class TextRole {
     FILE_NEW,
     FILE_CHANGED,
     FILE_SAVED,
+    CODE_BUILTIN,
+    CODE_KEYWORD,
+    CODE_STRING_LITERAL,
+    CODE_NUMBER_LITERAL,
+    CODE_COMMENT
 };
 
 #endif // TEXT_ROLE_HPP

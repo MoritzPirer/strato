@@ -34,26 +34,31 @@ void UiHandler::setRole(TextRole role) {
         break;
     }
 
+    case TextRole::CODE_KEYWORD:
     case TextRole::WEAK_HIGHLIGHT: {
         attron(COLOR_PAIR(2));
         break;
     }
     
+    case TextRole::CODE_NUMBER_LITERAL:
     case TextRole::FILE_CHANGED: {
         attron(COLOR_PAIR(3));
         break;
     }
     
+    case TextRole::CODE_COMMENT:
     case TextRole::FILE_NEW: {
         attron(COLOR_PAIR(4));
         break;
     }
     
+    case TextRole::CODE_STRING_LITERAL:
     case TextRole::FILE_SAVED: {
         attron(COLOR_PAIR(5));
         break;
     }
     
+    case TextRole::CODE_BUILTIN:
     case TextRole::MEDIUM_HIGHLIGHT: {
         attron(COLOR_PAIR(6));
         break;
@@ -63,6 +68,8 @@ void UiHandler::setRole(TextRole role) {
         attron(COLOR_PAIR(7));
         break;
     }
+
+
 
     }
 }

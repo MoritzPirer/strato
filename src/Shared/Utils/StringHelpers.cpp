@@ -1,3 +1,5 @@
+#include <regex>
+
 #include "../../../inc/Shared/Utils/StringHelpers.hpp"
 
 using std::string, std::vector;
@@ -151,4 +153,65 @@ size_t StringHelpers::countLeadingSpaces(const std::string& str) {
 
 size_t StringHelpers::findFirstNonDigit(const std::string& str) {
     return str.find_first_not_of("0123456789");
+}
+
+
+bool StringHelpers::isNumberLiteral(const std::string& str, std::optional<char> number_seperator) {
+    return isBinaryNumber(str, number_seperator)
+        || isOctalNumber(str, number_seperator)
+        || isHexNumber(str, number_seperator)
+        || isDecimalNumber(str, number_seperator);
+}
+
+bool StringHelpers::isBinaryNumber(const std::string& str, std::optional<char> number_seperator) {
+    std::regex expression;
+    if (number_seperator == std::nullopt) {
+        expression = std::regex("^0b[01]+$");
+    }
+    else {
+        std::string regex_str = "^0b[01]+([" + std::string(1,*number_seperator) + "01]?[01]+)*$";
+        expression = std::regex(regex_str);
+    }
+
+    return std::regex_match(str, expression);
+}
+
+bool StringHelpers::isOctalNumber(const std::string& str, std::optional<char> number_seperator) {
+    std::regex expression;
+    if (number_seperator == std::nullopt) {
+        expression = std::regex("^0o[0-7]+$");
+    }
+    else {
+        std::string regex_str = "^0o[0-7]+([" + std::string(1,*number_seperator) + "0-7]?[0-7]+)*$";
+        expression = std::regex(regex_str);
+    }
+
+    return std::regex_match(str, expression);
+}
+
+bool StringHelpers::isHexNumber(const std::string& str, std::optional<char> number_seperator) {
+    std::regex expression;
+    if (number_seperator == std::nullopt) {
+        expression = std::regex("^0x[0-9a-fA-F]+$");
+    }
+    else {
+        std::string regex_str = "^0x[0-9a-fA-F]+([" + std::string(1,*number_seperator) + "0-9a-fA-F]?[0-9a-fA-F]+)*$";
+        expression = std::regex(regex_str);
+    }
+
+    return std::regex_match(str, expression);
+
+}
+
+bool StringHelpers::isDecimalNumber(const std::string& str, std::optional<char> number_seperator) {
+    std::regex expression;
+    if (number_seperator == std::nullopt) {
+        expression = std::regex("^[0-9]+$");
+    }
+    else {
+        std::string regex_str = "^[0-9]+([" + std::string(1,*number_seperator) + "0-9]?[0-9]+)*$";
+        expression = std::regex(regex_str);
+    }
+
+    return std::regex_match(str, expression);
 }
