@@ -30,7 +30,7 @@ NcursesSession::NcursesSession() {
     init_pair(COLOR_FILE_SAVED, COLOR_GREEN,   -1);
     init_pair(COLOR_FILE_NEW, COLOR_RED,     -1); 
 
-    init_pair(COLOR_CODE_COMMENT, COLOR_GREEN,  -1); 
+    init_pair(COLOR_CODE_COMMENT, COLOR_GREEN, -1); 
     init_pair(COLOR_CODE_KEYWORD, COLOR_BLUE,  -1);
     init_pair(COLOR_CODE_BUILTIN, COLOR_MAGENTA,  -1);
     init_pair(COLOR_CODE_STRING, COLOR_YELLOW,  -1);

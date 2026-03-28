@@ -1,0 +1,40 @@
+language_names {
+#all names that identify this language, one per line (NOT case sensitive)
+#e.g. cpp, c++, cplusplus
+}
+
+language_keywords = {
+#all keywords the language defines, one per line (case sensitive)
+#e.g. while, if, define, float
+}
+
+language_builtins {
+#all data types, classes and function the language defines, one per line (case sensitive)
+#e.g. vector, length, static_cast
+}
+
+string_indicators = {
+#every way to start and end a string literal, in the form (a,b), where a starts the literal and b ends it. One per line
+#e.g. (","), (',')
+}
+
+token_splitters = #a string of all characters that seperate two tokens. for most languages, this will be all operators and brackets
+
+token_groups = {
+#any strings of tokens that should be grouped together, one per line
+#this is only relevant if the grouped token changes rendering, e.g. for starting a comment
+#e.g. // 
+}
+
+ranged_comment = {
+#every way to start and end a comment that can be within a line or span multiple lines, one per line.
+#given as (a,b) where a starts the comment and b ends it. May be multiple characters
+#e.g. (/*,*/)
+}
+
+rest_of_line_comment = {
+#every way to start a comment that makes the entire rest of the line a comment. One per line. May be multiple characters
+# e.g. //
+}
+
+number_seperator = #a character that seperats chunks of a number literal without changing its value, e.g. 1_000_000

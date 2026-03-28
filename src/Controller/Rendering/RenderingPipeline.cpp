@@ -40,6 +40,7 @@ void RenderPipeline::mergeIfPossible(string& current_token, char current, vector
     for (const string& group : m_interpreter->getGroupedDelimiters()) {
         if (group.starts_with(current_token + current)) {
             current_token += current;
+            return;
         }
     }
 
@@ -60,6 +61,9 @@ vector<VisualSegment> RenderPipeline::interpret(
     int ignored = 0;
     for (const string& token : tokenized_paragraph) {
         VisualSegment parsed = m_interpreter->parseToken(token, paragraph_role);
+        if (disregard_until == -1) {
+            continue;
+        }
         // fully ignored
         if (ignored + static_cast<int>(parsed.content.length()) < disregard_until) {
             ignored += parsed.content.length();

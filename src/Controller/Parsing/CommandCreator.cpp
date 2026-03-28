@@ -219,6 +219,7 @@ ParseResult CommandCreator::generateParagraphCreationCommand(CommandDetails deta
         return {details.next_mode, make_shared<CompoundAction>(ActionList{
             make_shared<SpanMoveAction>(start, end, *details.direction),
             make_shared<ParagraphSplittingAction>(start),
+            make_shared<CharwiseMoveAction>(context.text_area_size, Direction::LEFT)
         })};
     }
     

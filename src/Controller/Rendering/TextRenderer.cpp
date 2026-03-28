@@ -23,6 +23,16 @@ vector<vector<VisualSegment>> TextRenderer::renderVisibleText(ScreenSize text_ar
 
     Position first_visible = m_state.getFirstVisibleChar(text_area_size);
 
+    for (int i = 0; i < first_visible.row; i++) {
+        const std::string& offscreen_paragraph = m_state.getParagraph(i);
+        if (offscreen_paragraph.empty()) {
+            continue;
+        }
+
+        vector<vector<VisualSegment>> temp = pipeline.renderParagraph(
+            m_state.getParagraph(i), "", - 1);
+    }
+    
     int current_paragraph = first_visible.row;
     vector<vector<VisualSegment>> visible_rows;    
     visible_rows.reserve(text_area_size.height);
@@ -51,7 +61,7 @@ vector<vector<VisualSegment>> TextRenderer::renderVisibleText(ScreenSize text_ar
         vector<vector<VisualSegment>> temp = pipeline.renderParagraph(
             m_state.getParagraph(current_paragraph), next, start_column);
 
-        //only add rows until visual_row = text_area_size.height
+        //TODO: only add rows until visual_row = text_area_size.height
         visible_rows.insert(visible_rows.end(), temp.begin(), temp.end());
         visual_row += temp.size();
         current_paragraph++;
