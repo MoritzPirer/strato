@@ -15,6 +15,7 @@
 
 struct CodeHighlightInfo {
     std::unordered_set<std::string> m_language_names;
+    std::vector<std::string> m_file_extensions;
     std::unordered_set<std::string> m_language_keywords;
     std::unordered_set<std::string> m_language_builtins;
 
@@ -26,7 +27,7 @@ struct CodeHighlightInfo {
     std::unordered_set<std::string> m_rest_of_line_comments;
     std::vector<std::pair<std::string, std::string>> m_ranged_comments;
 
-    char m_number_seperator;
+    std::optional<char> m_number_seperator;
 
     CodeHighlightInfo() = default;
     CodeHighlightInfo(const CodeHighlightInfo&) = default;

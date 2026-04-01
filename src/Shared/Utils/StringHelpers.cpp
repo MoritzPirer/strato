@@ -141,6 +141,16 @@ bool StringHelpers::consistsOnlyOfIgnoringWhitespace(const std::string& str, cha
     return true;
 }
 
+bool StringHelpers::consistsOnlyOf(const std::string& str, char comparison) {
+    for (char c : str) {
+        if (c != comparison) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 size_t StringHelpers::countLeadingSpaces(const std::string& str) {
     size_t index = str.find_first_not_of(' ');
 

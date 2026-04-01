@@ -13,12 +13,13 @@
 
 #include "../../Shared/DataFlow/VisualSegment.hpp"
 #include "../../Model/EditorState.hpp"
-#include "EscapeState.hpp"
+#include "RenderPipeline.hpp"
 
 class TextRenderer {
 private:
     const EditorState& m_state; 
 
+    RenderPipeline createPipeline(ScreenSize text_area_size);
 public:
     TextRenderer(const EditorState& state);
     TextRenderer(const TextRenderer&) = default;

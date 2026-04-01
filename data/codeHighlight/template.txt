@@ -37,4 +37,4 @@ rest_of_line_comment = {
 # e.g. //
 }
 
-number_seperator = #a character that seperats chunks of a number literal without changing its value, e.g. 1_000_000
+number_seperator = #a character that seperats chunks of a number literal without changing its value, e.g. 1_000_000, or 'NONE'

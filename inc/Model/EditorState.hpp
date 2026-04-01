@@ -63,6 +63,7 @@ public:
 
     const Cursor& getCursor() const { return m_cursor; }
     TextFile& getFile() { return m_file; }
+    std::string getFileExtension() const { return m_file.getFilepath().extension(); }
     bool getIsQuit() const { return m_is_quit; }
     void setIsQuit(bool is_quit) { m_is_quit = is_quit; } 
     

@@ -140,4 +140,4 @@ rest_of_line_comment = {
 #
 }
 
-number_seperator = '
+number_seperator = _

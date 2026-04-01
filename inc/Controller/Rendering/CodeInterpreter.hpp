@@ -40,6 +40,8 @@ public:
     TextRole findParagraphLevelRole(const std::string& current_paragraph, const std::string& next_paragraph) override;
 
     void reset() override;
+
+    CodeHighlightInfo getHighlightInfo() const { return m_highlight_info; }
 };
 
 #endif //CODE_INTERPRETER_HPP

@@ -3,6 +3,7 @@
 CodeHighlightInfo CodeHighlightInfo::testPython() {
     CodeHighlightInfo info;
     
+    info.m_file_extensions = {".py"};
     info.m_language_names = {"python", "py"};
     info.m_language_keywords = {
         "and", "as", "assert", "async", "await", "break",
