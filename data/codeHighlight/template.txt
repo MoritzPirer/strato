@@ -1,4 +1,8 @@
-language_names {
+language_extensions = {
+#all file extensions that should use
+}
+
+language_names = {
 #all names that identify this language, one per line (NOT case sensitive)
 #e.g. cpp, c++, cplusplus
 }
@@ -8,7 +12,7 @@ language_keywords = {
 #e.g. while, if, define, float
 }
 
-language_builtins {
+language_builtins = {
 #all data types, classes and function the language defines, one per line (case sensitive)
 #e.g. vector, length, static_cast
 }

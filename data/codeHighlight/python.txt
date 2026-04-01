@@ -1,3 +1,7 @@
+language_extensions = {
+.py
+}
+
 language_names {
 python
 py

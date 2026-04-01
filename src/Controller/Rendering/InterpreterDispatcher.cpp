@@ -47,7 +47,7 @@ shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string&
 std::optional<shared_ptr<Interpreter>> InterpreterDispatcher::getInterpreterByExtension(const std::string& extension) {
     for (std::shared_ptr<CodeInterpreter> current : m_interpreters) {
         for (const std::string& language_extension : current->getHighlightInfo().m_file_extensions) {
-            if (extension == language_extension) {
+            if (StringHelpers::caselessEquals(extension, language_extension)) {
                 return current;
             }
         }
@@ -59,7 +59,7 @@ std::optional<shared_ptr<Interpreter>> InterpreterDispatcher::getInterpreterByEx
 std::optional<std::shared_ptr<Interpreter>> InterpreterDispatcher::getInterpreterByKeyword(const std::string& keyword) {
     for (std::shared_ptr<CodeInterpreter> current : m_interpreters) {
         for (const std::string& language_name : current->getHighlightInfo().m_language_names) {
-            if (keyword == language_name) {
+            if (StringHelpers::caselessEquals(keyword, language_name)) {
                 return current;
             }
         }

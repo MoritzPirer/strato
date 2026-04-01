@@ -92,6 +92,20 @@ void StringHelpers::lowercase(std::string& str) {
     }
 }
 
+bool StringHelpers::caselessEquals(const std::string& a, const std::string& b) {
+    if (a.length() != b.length()) {
+        return false;
+    }
+
+    for (size_t i = 0; i < a.length(); i++) {
+        if (std::tolower(a[i]) != std::tolower(b[i])) {
+            return false;
+        }
+    }
+
+    return true;
+}
+
 std::optional<char> StringHelpers::firstNonSpace(const std::string& str) {
     size_t index = str.find_first_not_of(' ');
 

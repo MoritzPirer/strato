@@ -13,7 +13,6 @@
 #include "../../Model/EditorState.hpp"
 #include "../Modes/ModeManager.hpp"
 #include "../Services/Settings/Settings.hpp"
-#include "EscapeState.hpp"
 
 class Renderer {
 private:

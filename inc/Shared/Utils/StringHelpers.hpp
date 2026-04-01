@@ -63,7 +63,7 @@ namespace StringHelpers {
     /// @return the number of words in the string
     int countWords(const std::string& str);
 
-    
+    bool caselessEquals(const std::string& a, const std::string& b);
     /// @brief returns the first character in str that is not a space (' '),
     ///     or std::nullopt if str doesn't contain a space
     std::optional<char> firstNonSpace(const std::string& str);
