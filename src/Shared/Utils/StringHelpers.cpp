@@ -92,6 +92,19 @@ void StringHelpers::lowercase(std::string& str) {
     }
 }
 
+
+void StringHelpers::trimWrapping(std::string& str, char removed) {
+    size_t start = str.find_first_not_of(removed);
+    size_t end = str.find_last_not_of(removed);
+
+    if (start == std::string::npos || end == std::string::npos) {
+        str = "";
+        return;
+    }
+    
+    str = str.substr(start, end - start + 1);
+}
+
 bool StringHelpers::caselessEquals(const std::string& a, const std::string& b) {
     if (a.length() != b.length()) {
         return false;

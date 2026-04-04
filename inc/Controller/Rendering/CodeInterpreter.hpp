@@ -12,7 +12,7 @@
 #include <vector>
 #include "Interpreter.hpp"
 #include "../../Shared/DataFlow/TextStyle.hpp"
-#include "CodeHiglightInfo.hpp"
+#include "CodeHighlightInfo.hpp"
 
 class CodeInterpreter: public Interpreter {
 private:

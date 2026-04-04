@@ -1,8 +1,10 @@
 #include <fstream>
 #include <filesystem>
+#include <functional>
 
 #include "../../../inc/Controller/IO/FileException.hpp"
 #include "../../../inc/Controller/IO/FileHandler.hpp"
+#include "../../../inc/Shared/Utils/StringHelpers.hpp"
 
 using std::string, std::filesystem::path;
 namespace {
@@ -61,6 +63,172 @@ namespace {
         file.markAsSaved();
         return file;
     }
+
+    std::optional<char> parseOptionalChar(const string& argument) {
+        //consume up to including { 
+        size_t end_of_skip = argument.find_first_of('{');
+        if (end_of_skip == string::npos || end_of_skip == argument.length() - 1) {
+            return std::nullopt;
+        }
+
+        string remaining = argument.substr(end_of_skip + 1);
+
+        // consume } at the end
+        if (remaining.ends_with("}")) {
+            remaining.pop_back();
+        }
+        
+        // trim leading & trailing space
+        StringHelpers::trimWrapping(remaining);
+
+        if (remaining == "SPACE") {
+            return ' ';
+        }
+
+        if (remaining.length() == 1) {
+            return remaining[0];
+        }
+
+        return std::nullopt; 
+    }
+
+    std::vector<string> parseStringVector(const string& argument) {
+        size_t end_of_skip = argument.find_first_of('{');
+        if (end_of_skip == string::npos || end_of_skip == argument.length() - 1) {
+            return {};
+        }
+
+        string remaining = argument.substr(end_of_skip + 1);
+        std::vector<string> parsed;
+
+        while (true) {
+            size_t index = remaining.find_first_of(' ');
+            if (index == string::npos) {
+                break;
+            }
+
+            string token = remaining.substr(0, index);
+            StringHelpers::trimWrapping(token);
+
+            remaining = remaining.substr(index + 1);
+
+            if (!token.empty() && token != "}") {
+                parsed.push_back(token);
+            }
+        }
+
+        return parsed;
+    }
+
+    std::unordered_set<string> parseStringSet(const string& argument) {
+        auto vec = parseStringVector(argument);
+        return std::unordered_set<string>(vec.begin(), vec.end());
+    }
+
+    string parseString(const string& argument) {
+        size_t string_start = argument.find_first_of('"');
+        if (string_start == string::npos || string_start == argument.length() - 1) {
+            return "";
+        }
+
+        size_t string_end = argument.find_last_of('"');
+        if (string_end == string_start) {
+            return "";
+        }
+
+        return argument.substr(string_start + 1, string_end - string_start - 1);
+    }
+
+    std::vector<std::pair<string, string>> parsePairVector(const std::string& argument) {
+        auto pairs = parseStringVector(argument);
+
+        std::vector<std::pair<string, string>> result;
+
+        for (auto pair_string : pairs) {
+            if (!pair_string.starts_with('(') || !pair_string.ends_with(')')) {
+                continue;
+            }
+
+            pair_string = pair_string.substr(1, pair_string.length() - 2);
+
+            size_t seperator = pair_string.find_first_of(',');
+            
+            if (seperator == std::string::npos) {
+                continue;
+            }
+
+            result.emplace_back(pair_string.substr(0, seperator), pair_string.substr(seperator + 1));
+
+        }
+
+        return result;
+    }
+
+    void parseArgument(const std::string& full_line, CodeHighlightInfo& info) {
+        size_t seperator = full_line.find_first_of(' ');
+        if (seperator == std::string::npos) {
+            return;
+        }
+
+        std::string keyword = full_line.substr(0, seperator);
+        std::string argument = full_line.substr(seperator + 1);
+
+        if (keyword == "language_extensions") {
+            info.m_file_extensions = parseStringVector(argument);
+            return;
+        }
+
+        if (keyword == "language_names") {
+            info.m_language_names = parseStringSet(argument);
+            return;
+        }
+
+        if (keyword == "language_keywords") {
+            info.m_language_keywords = parseStringSet(argument);
+            return;
+        }
+
+        if (keyword == "language_builtins") {
+            info.m_language_builtins = parseStringSet(argument);
+            return;
+        }
+
+        if (keyword == "string_indicators") {
+            info.m_string_indicators = parsePairVector(argument);
+            return;
+        }
+
+        if (keyword == "token_splitters") {
+            info.m_token_splitters = parseString(argument);
+            return;
+        }
+
+        if (keyword == "token_groups") {
+            info.m_token_groups = parseStringVector(argument);
+            return;
+        }
+
+        if (keyword == "ranged_comment") {
+            /// FIXME:
+            info.m_ranged_comments = parsePairVector(argument);
+            // throw std::logic_error(info.debug());
+            return;
+        }
+
+        if (keyword == "rest_of_line_comment") {
+            info.m_rest_of_line_comments = parseStringSet(argument);
+            return;
+        }
+        
+        if (keyword == "number_seperator") {
+            /// FIXME:
+            info.m_number_seperator = parseOptionalChar(argument);
+            return;
+        }
+
+        throw std::logic_error("unknown keyword: " + keyword);
+    }
+
 
 } // anonymous namespace
 
@@ -136,8 +304,34 @@ path FileHandler::createBackupLocation(path executable_path) {
 }
 
 path FileHandler::getBackupPath(path file_path, path backup_directory) {
-    std::string backup_filename = file_path.stem().string()
+    string backup_filename = file_path.stem().string()
         + " (backup)" + file_path.extension().string();
 
     return backup_directory / backup_filename;
+}
+
+CodeHighlightInfo FileHandler::parseCodeLanguageFile(std::filesystem::path file_path) {
+    std::filesystem::path absolute = std::filesystem::absolute(file_path);
+    if (!std::filesystem::exists(absolute)) {
+        throw std::logic_error("Path does not exist: " + absolute.string() + 
+            " | Current WorkDir: " + std::filesystem::current_path().string());
+        // return CodeHighlightInfo();
+    }
+    
+    std::ifstream input_file(absolute);
+    if (!input_file.is_open()) {
+        throw FileException("Unable to open input file!");
+    }
+
+    CodeHighlightInfo info;
+
+    string line;
+
+    while (getline(input_file, line)) {
+       parseArgument(line, info); 
+    }
+
+    input_file.close();
+
+    return info;
 }

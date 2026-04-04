@@ -1,9 +1,10 @@
 language_extensions = {
-#all file extensions that should use
+#all file extensions that should use this language file. Not case sensitive. should not conflict with other language files
+#one per line, including the dot, e.g. .hpp, .cpp
 }
 
 language_names = {
-#all names that identify this language, one per line (NOT case sensitive)
+#all names that identify this language, one per line (NOT case sensitive). should not conflict with other language files
 #e.g. cpp, c++, cplusplus
 }
 

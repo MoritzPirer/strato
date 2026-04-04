@@ -25,7 +25,7 @@ public:
     TextRenderer(const TextRenderer&) = default;
     ~TextRenderer() = default;
 
-    std::vector<std::vector<VisualSegment>> renderVisibleText(ScreenSize text_area_size);
+    std::vector<std::vector<VisualSegment>> renderVisibleText(ScreenSize text_area_size, std::string executable_path);
 };
 
 #endif //TEXT_RENDERER_HPP

@@ -9,14 +9,15 @@
 
 using std::vector, std::string;
 
-Renderer::Renderer(const EditorState& state, const Settings& settings, const ModeManager& mode_manager):
+Renderer::Renderer(const EditorState& state, const Settings& settings, const ModeManager& mode_manager, std::string executable_path):
     c_state{state},
     c_settings{settings},
-    c_mode_manager{mode_manager}
+    c_mode_manager{mode_manager},
+    c_executable_path{executable_path}
     {}
 
 vector<vector<VisualSegment>> Renderer::renderVisibleText(ScreenSize text_area_size) {
-    return TextRenderer(c_state).renderVisibleText(text_area_size);
+    return TextRenderer(c_state).renderVisibleText(text_area_size, c_executable_path);
 }
 
 vector<VisualSegment> Renderer::calculateLineNumbers(ScreenSize text_area_size) {

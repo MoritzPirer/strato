@@ -22,21 +22,21 @@ private:
 
     std::vector<std::shared_ptr<CodeInterpreter>> m_interpreters;
     
-    std::optional<std::shared_ptr<Interpreter>> getInterpreterByKeyword(const std::string& keyword);
+    std::optional<std::shared_ptr<CodeInterpreter>> getInterpreterByKeyword(const std::string& keyword);
 
 public:
-    InterpreterDispatcher();
+    InterpreterDispatcher(std::string executable_path);
     InterpreterDispatcher(const InterpreterDispatcher&) = default;
     ~InterpreterDispatcher() = default;
 
-    static InterpreterDispatcher& instance();
+    static InterpreterDispatcher& instance(std::string executable_path = "");
 
     /// @brief returns an interpreter subclass based on the CURRENT LINE. Calling this function in the biddle of a code
     ///     block might have unintended effects
     /// @return 
     std::shared_ptr<Interpreter> getInterpreter(const std::string& paragraph, const std::string& file_extension);
 
-    std::optional<std::shared_ptr<Interpreter>> getInterpreterByExtension(const std::string& extension);
+    std::optional<std::shared_ptr<CodeInterpreter>> getInterpreterByExtension(const std::string& extension);
 
     bool isMarkdownCodeBlockFence(const std::string& paragraph);
 

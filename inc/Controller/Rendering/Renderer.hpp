@@ -19,9 +19,10 @@ private:
     const EditorState& c_state;
     const Settings& c_settings;
     const ModeManager& c_mode_manager;
+    const std::string c_executable_path;
 
 public:
-    Renderer(const EditorState& state, const Settings& settings, const ModeManager& mode_manager);
+    Renderer(const EditorState& state, const Settings& settings, const ModeManager& mode_manager, std::string executable_path);
     Renderer(const Renderer&) = default;
     ~Renderer() = default;
 

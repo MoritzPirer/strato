@@ -1,4 +1,4 @@
-#include "../../../inc/Controller/Rendering/CodeHiglightInfo.hpp"
+#include "../../../inc/Controller/Rendering/CodeHighlightInfo.hpp"
 
 CodeHighlightInfo CodeHighlightInfo::testPython() {
     CodeHighlightInfo info;

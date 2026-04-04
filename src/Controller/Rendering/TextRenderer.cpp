@@ -12,8 +12,10 @@ using std::vector, std::string;
 
 TextRenderer::TextRenderer(const EditorState& state): m_state{state} {}
 
-vector<vector<VisualSegment>> TextRenderer::renderVisibleText(ScreenSize text_area_size) {
+vector<vector<VisualSegment>> TextRenderer::renderVisibleText(ScreenSize text_area_size, std::string executable_path) {
 
+    InterpreterDispatcher::instance(executable_path);
+    
     RenderPipeline pipeline = createPipeline(text_area_size);
 
     Position first_visible = m_state.getFirstVisibleChar(text_area_size);
@@ -24,7 +26,6 @@ vector<vector<VisualSegment>> TextRenderer::renderVisibleText(ScreenSize text_ar
             continue;
         }
 
-        //update renderer here
         if (InterpreterDispatcher::instance().isMarkdownCodeBlockFence(offscreen_paragraph)) {
             pipeline.setInterpreter(InterpreterDispatcher::instance().getInterpreter(offscreen_paragraph, m_state.getFileExtension()));
         }

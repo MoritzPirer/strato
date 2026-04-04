@@ -5,22 +5,31 @@
 #include "../../../inc/Controller/Rendering/MarkdownInterpreter.hpp"
 #include "../../../inc/Controller/Rendering/NullInterpreter.hpp"
 #include "../../../inc/Shared/Utils/StringHelpers.hpp"
+#include "../../../inc/Controller/IO/FileHandler.hpp"
 
 using std::shared_ptr;
 
-InterpreterDispatcher::InterpreterDispatcher(): 
-    m_interpreters{{std::make_shared<CodeInterpreter>(CodeHighlightInfo::testPython())}} {}
+InterpreterDispatcher::InterpreterDispatcher(std::string executable_path) 
+{
+    std::filesystem::path path = std::filesystem::absolute(executable_path).parent_path();
+    
+    //TEMP
+    std::filesystem::path data_file = path / "data/codeHighlight/sample.txt";
+    m_interpreters.push_back(std::make_shared<CodeInterpreter>(FileHandler::parseCodeLanguageFile(data_file)));
+}
 
-InterpreterDispatcher& InterpreterDispatcher::instance() {
-    static InterpreterDispatcher m_instance;
+InterpreterDispatcher& InterpreterDispatcher::instance(std::string executable_path) {
+    static InterpreterDispatcher m_instance(executable_path);
     return m_instance;
 }
 
 shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string& paragraph, const std::string& file_extension) {
+
     if (!file_extension.ends_with("md")) {
         auto interpreter = getInterpreterByExtension(file_extension);
         if (interpreter.has_value()) {
-            return *interpreter;
+            // return std::make_shared<CodeInterpreter>(*interpreter);
+            return std::make_shared<NullInterpreter>();
         }
 
         return std::make_shared<NullInterpreter>();
@@ -36,15 +45,15 @@ shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string&
         return std::make_shared<MarkdownInterpreter>();
     }
 
-    auto interpreter = getInterpreterByKeyword(after_indicator);
+    std::optional<std::shared_ptr<CodeInterpreter>> interpreter = getInterpreterByKeyword(after_indicator);
     if (interpreter.has_value()) {
-        return *interpreter;
+        return std::make_shared<CodeInterpreter>(**interpreter);
     }
 
     return std::make_shared<NullInterpreter>();
 }
 
-std::optional<shared_ptr<Interpreter>> InterpreterDispatcher::getInterpreterByExtension(const std::string& extension) {
+std::optional<shared_ptr<CodeInterpreter>> InterpreterDispatcher::getInterpreterByExtension(const std::string& extension) {
     for (std::shared_ptr<CodeInterpreter> current : m_interpreters) {
         for (const std::string& language_extension : current->getHighlightInfo().m_file_extensions) {
             if (StringHelpers::caselessEquals(extension, language_extension)) {
@@ -56,7 +65,7 @@ std::optional<shared_ptr<Interpreter>> InterpreterDispatcher::getInterpreterByEx
     return std::nullopt;
 }
 
-std::optional<std::shared_ptr<Interpreter>> InterpreterDispatcher::getInterpreterByKeyword(const std::string& keyword) {
+std::optional<std::shared_ptr<CodeInterpreter>> InterpreterDispatcher::getInterpreterByKeyword(const std::string& keyword) {
     for (std::shared_ptr<CodeInterpreter> current : m_interpreters) {
         for (const std::string& language_name : current->getHighlightInfo().m_language_names) {
             if (StringHelpers::caselessEquals(keyword, language_name)) {

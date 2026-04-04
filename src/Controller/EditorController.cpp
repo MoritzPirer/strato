@@ -57,8 +57,8 @@ void EditorController::startAutoSaveLoop(std::filesystem::path executable_path) 
     });
 }
 
-RenderInfo EditorController::calculateRenderInfo(ScreenSize actual_size) {
-    Renderer renderer(m_state, m_settings, m_mode_manager);
+RenderInfo EditorController::calculateRenderInfo(ScreenSize actual_size, std::string executable_path) {
+    Renderer renderer(m_state, m_settings, m_mode_manager, executable_path);
 
     vector<vector<VisualSegment>> metadata_rows = renderer.calculateMetadataRows(actual_size);
 
@@ -90,7 +90,7 @@ void EditorController::mainLoop(std::string executable_path) {
     
     while (m_state.getIsQuit() == false) {
         ScreenSize total_size = m_ui_handler.screenSize();
-        RenderInfo render_info = calculateRenderInfo(total_size);
+        RenderInfo render_info = calculateRenderInfo(total_size, executable_path);
         m_ui_handler.render(render_info);
         Input input = m_ui_handler.getInput();
 

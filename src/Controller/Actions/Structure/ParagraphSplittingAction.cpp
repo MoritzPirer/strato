@@ -9,9 +9,7 @@ ParagraphSplittingAction::ParagraphSplittingAction(Position first_after_split, c
 void ParagraphSplittingAction::apply(ExecutionContext& context) {
     context.state.splitAt(c_first_after_split);
 
-    //FIXME this is wrong if there is no blank line after the the paragraph of c_first_after_split
-    //FIXME column position is totally weird
-    int row_offset = 1; //(context.state.getParagraph(c_first_after_split.row + 1).empty()? 0 : 1); 
+    int row_offset = 1;
     Position move_to = {c_first_after_split.row + row_offset, static_cast<int>(c_new_line_prefix.length())};
 
     if (!c_new_line_prefix.empty()) {

@@ -39,7 +39,7 @@ private:
     void startAutoSaveLoop(std::filesystem::path executable_path);
 
     /// @brief calculates what should be rendered to the screen
-    RenderInfo calculateRenderInfo(ScreenSize actual_size);
+    RenderInfo calculateRenderInfo(ScreenSize actual_size, std::string executable_path);
 
     ScreenSize calculateTextAreaSize(const RenderInfo& render_info, const ScreenSize& total_size);
     

@@ -55,6 +55,9 @@ namespace StringHelpers {
     /// @brief converts the string to all-lowercase in-place
     void lowercase(std::string& str);
 
+    /// @brief removes leading and trailing spaces
+    void trimWrapping(std::string& str, char removed = ' ');
+
     ///// CONTENT TESTING
 
     /// @brief counts the number of words in the given string, with any amount of whitespace countin
