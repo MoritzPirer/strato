@@ -28,8 +28,8 @@ shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string&
     if (!file_extension.ends_with("md")) {
         auto interpreter = getInterpreterByExtension(file_extension);
         if (interpreter.has_value()) {
-            // return std::make_shared<CodeInterpreter>(*interpreter);
-            return std::make_shared<NullInterpreter>();
+            m_last_was_code_interpreter = true;
+            return std::make_shared<CodeInterpreter>(**interpreter);
         }
 
         return std::make_shared<NullInterpreter>();
@@ -38,18 +38,29 @@ shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string&
     const std::string after_indicator = paragraph.substr(c_code_block_indicator.length());
 
     if (!paragraph.starts_with(c_code_block_indicator)) {
+        m_last_was_code_interpreter = false;
         return std::make_shared<MarkdownInterpreter>();
     }
 
     if (StringHelpers::consistsOnlyOf(after_indicator, ' ')) {
-        return std::make_shared<MarkdownInterpreter>();
+        //only give out Markdown if withing code block
+        if (m_last_was_code_interpreter) {
+            m_last_was_code_interpreter = false;
+            return std::make_shared<MarkdownInterpreter>();
+        }
+        else {
+            m_last_was_code_interpreter = true;
+            return std::make_shared<NullInterpreter>();
+        }
     }
 
     std::optional<std::shared_ptr<CodeInterpreter>> interpreter = getInterpreterByKeyword(after_indicator);
     if (interpreter.has_value()) {
+        m_last_was_code_interpreter = true;
         return std::make_shared<CodeInterpreter>(**interpreter);
     }
 
+    m_last_was_code_interpreter = true;
     return std::make_shared<NullInterpreter>();
 }
 

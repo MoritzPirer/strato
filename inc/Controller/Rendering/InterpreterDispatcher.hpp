@@ -19,6 +19,7 @@
 class InterpreterDispatcher {
 private:
     const std::string c_code_block_indicator = "```";
+    bool m_last_was_code_interpreter = false;
 
     std::vector<std::shared_ptr<CodeInterpreter>> m_interpreters;
     

@@ -209,9 +209,7 @@ namespace {
         }
 
         if (keyword == "ranged_comment") {
-            /// FIXME:
             info.m_ranged_comments = parsePairVector(argument);
-            // throw std::logic_error(info.debug());
             return;
         }
 
@@ -221,7 +219,6 @@ namespace {
         }
         
         if (keyword == "number_seperator") {
-            /// FIXME:
             info.m_number_seperator = parseOptionalChar(argument);
             return;
         }
