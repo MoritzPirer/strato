@@ -14,7 +14,7 @@ InterpreterDispatcher::InterpreterDispatcher(std::string executable_path)
     std::filesystem::path path = std::filesystem::absolute(executable_path).parent_path();
     
     //TEMP
-    std::filesystem::path data_file = path / "data/codeHighlight/sample.txt";
+    std::filesystem::path data_file = path / "data/codeHighlight/cpp.txt";
     m_interpreters.push_back(std::make_shared<CodeInterpreter>(FileHandler::parseCodeLanguageFile(data_file)));
 }
 
@@ -42,7 +42,7 @@ shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string&
         return std::make_shared<MarkdownInterpreter>();
     }
 
-    if (StringHelpers::consistsOnlyOf(after_indicator, ' ')) {
+    if (StringHelpers::containsOnly(after_indicator, ' ')) {
         //only give out Markdown if withing code block
         if (m_last_was_code_interpreter) {
             m_last_was_code_interpreter = false;

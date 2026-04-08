@@ -82,10 +82,10 @@ namespace StringHelpers {
     bool startsWithIgnoringWhitespace(const std::string& str, const std::string& start);
     
     /// @brief checks if all characters of str are either whitespace or comparison
-    bool consistsOnlyOfIgnoringWhitespace(const std::string& str, char comparison);
+    bool containsOnlyIgnoringWhitespace(const std::string& str, char comparison);
 
 
-    bool consistsOnlyOf(const std::string& str, char comparison);
+    bool containsOnly(const std::string& str, char comparison);
 
     /// @brief counts the number of spaces before the first non-space character or the end of the string
     size_t countLeadingSpaces(const std::string& str);

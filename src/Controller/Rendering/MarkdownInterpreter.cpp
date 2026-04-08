@@ -55,7 +55,7 @@ bool MarkdownInterpreter::isHeading(const std::string& current_paragraph, const 
 }
 
 bool MarkdownInterpreter::isUnterline(const std::string& paragraph) {
-    return (StringHelpers::consistsOnlyOfIgnoringWhitespace(paragraph, c_underline_indicator)
+    return (StringHelpers::containsOnlyIgnoringWhitespace(paragraph, c_underline_indicator)
         && std::ranges::count(paragraph, c_underline_indicator) >= c_min_underline_count);
 }
 

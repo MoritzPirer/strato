@@ -8,7 +8,7 @@
 #include "../../../inc/Shared/Utils/StringHelpers.hpp"
 
 namespace {
-bool shouldTrySmartList(ParsingContext context);
+bool isWithinCodeBlock(ParsingContext context);
 ParseResult basicParagraphSplit(Position cursor);
 std::optional<ParseResult> getStaticSmartlistInsertion(ParsingContext context);
 int getNumberListValue(const std::string& paragraph);
@@ -22,10 +22,30 @@ std::optional<ParseResult> getStaticSmartlistInsertion(ParsingContext context);
 
 bool shouldTrySmartList(ParsingContext context) {
     const std::string& file_name = context.state.getFileName();
-    return (
-        file_name.ends_with(".md")
-        || file_name.ends_with(".txt")
-    );
+    return ((file_name.ends_with(".md") || file_name.ends_with(".txt")) && !isWithinCodeBlock(context));
+}
+
+bool isWithinCodeBlock(ParsingContext context) {
+    auto isStartOfCodeBlock = [](const std::string& paragraph) -> bool {
+        return paragraph.starts_with("```");
+    };
+
+    auto isEndOfCodeBlock = [](const std::string& paragraph) -> bool {
+        return paragraph.starts_with("```") && StringHelpers::containsOnlyIgnoringWhitespace(paragraph, '`');
+    };
+
+    bool is_within_code_block = false;
+    for (int paragraph_index = 0; paragraph_index < context.state.getCursor().getRow(); paragraph_index++) {
+        const std::string& paragraph = context.state.getParagraph(paragraph_index);
+        if (is_within_code_block && isEndOfCodeBlock(paragraph)) {
+            is_within_code_block = false;
+        }
+        else if (!is_within_code_block && isStartOfCodeBlock(paragraph)) {
+            is_within_code_block = true;
+        }
+    }
+
+    return is_within_code_block;
 }
 
 ParseResult basicParagraphSplit(Position cursor) {

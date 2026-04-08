@@ -158,7 +158,7 @@ bool StringHelpers::startsWithIgnoringWhitespace(const std::string& str, const s
     return after_whitespace.starts_with(start);
 }
 
-bool StringHelpers::consistsOnlyOfIgnoringWhitespace(const std::string& str, char comparison) {
+bool StringHelpers::containsOnlyIgnoringWhitespace(const std::string& str, char comparison) {
     for (char c : str) {
         if (c != comparison && c != ' ') {
             return false;
@@ -168,7 +168,7 @@ bool StringHelpers::consistsOnlyOfIgnoringWhitespace(const std::string& str, cha
     return true;
 }
 
-bool StringHelpers::consistsOnlyOf(const std::string& str, char comparison) {
+bool StringHelpers::containsOnly(const std::string& str, char comparison) {
     for (char c : str) {
         if (c != comparison) {
             return false;
