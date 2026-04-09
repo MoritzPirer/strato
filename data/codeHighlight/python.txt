@@ -7,4 +7,4 @@ token_splitters = " {}()[]<>:,.-+*/=#%"
 token_groups = { }
 ranged_comment = { }
 rest_of_line_comment = { # }
-number_seperator = _
+number_seperator = { _ }

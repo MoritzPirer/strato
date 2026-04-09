@@ -13,7 +13,6 @@ InterpreterDispatcher::InterpreterDispatcher(std::string executable_path)
 {
     std::filesystem::path path = std::filesystem::absolute(executable_path).parent_path();
     
-    //TEMP
     std::filesystem::path data_folder = path / "data/codeHighlight";
     std::vector<CodeHighlightInfo> infos = FileHandler::parseAllCodeLanguageFiles(data_folder);
     for (const CodeHighlightInfo& info : infos) {
