@@ -39,7 +39,7 @@ namespace FileHandler {
     std::filesystem::path createBackupLocation(std::filesystem::path executable_path);
     std::filesystem::path getBackupPath(std::filesystem::path file_name, std::filesystem::path backup_directory);
 
-    CodeHighlightInfo parseCodeLanguageFile(std::filesystem::path file_path);
+    std::vector<CodeHighlightInfo> parseAllCodeLanguageFiles(std::filesystem::path code_highlight_folder);
 };
 
 

@@ -226,7 +226,31 @@ namespace {
         throw std::logic_error("unknown keyword: " + keyword);
     }
 
+    CodeHighlightInfo parseCodeLanguageFile(std::filesystem::path file_path) {
+        std::filesystem::path absolute = std::filesystem::absolute(file_path);
+        if (!std::filesystem::exists(absolute)) {
+            throw std::logic_error("Path does not exist: " + absolute.string() + 
+                " | Current WorkDir: " + std::filesystem::current_path().string());
+            // return CodeHighlightInfo();
+        }
+        
+        std::ifstream input_file(absolute);
+        if (!input_file.is_open()) {
+            throw FileException("Unable to open input file!");
+        }
 
+        CodeHighlightInfo info;
+
+        string line;
+
+        while (getline(input_file, line)) {
+        parseArgument(line, info); 
+        }
+
+        input_file.close();
+
+        return info;
+    }
 } // anonymous namespace
 
 
@@ -307,28 +331,23 @@ path FileHandler::getBackupPath(path file_path, path backup_directory) {
     return backup_directory / backup_filename;
 }
 
-CodeHighlightInfo FileHandler::parseCodeLanguageFile(std::filesystem::path file_path) {
-    std::filesystem::path absolute = std::filesystem::absolute(file_path);
-    if (!std::filesystem::exists(absolute)) {
-        throw std::logic_error("Path does not exist: " + absolute.string() + 
-            " | Current WorkDir: " + std::filesystem::current_path().string());
-        // return CodeHighlightInfo();
+std::vector<CodeHighlightInfo> FileHandler::parseAllCodeLanguageFiles(std::filesystem::path folder_path) {
+    try {
+        std::vector<CodeHighlightInfo> infos;
+        if (!std::filesystem::exists(folder_path) || !std::filesystem::is_directory(folder_path)) {
+            return {};
+        }
+
+        for (const auto& entry : std::filesystem::directory_iterator(folder_path)) {
+            if (entry.path().filename().string() == "template.txt") {
+                continue;
+            }
+            
+            infos.push_back(parseCodeLanguageFile(entry.path()));
+        }
+
+        return infos;
+    } catch (const std::filesystem::filesystem_error&) {
+        return {}; // No need to crash, just continue without highlighting
     }
-    
-    std::ifstream input_file(absolute);
-    if (!input_file.is_open()) {
-        throw FileException("Unable to open input file!");
-    }
-
-    CodeHighlightInfo info;
-
-    string line;
-
-    while (getline(input_file, line)) {
-       parseArgument(line, info); 
-    }
-
-    input_file.close();
-
-    return info;
 }

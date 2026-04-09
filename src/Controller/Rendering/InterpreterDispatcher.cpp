@@ -14,8 +14,11 @@ InterpreterDispatcher::InterpreterDispatcher(std::string executable_path)
     std::filesystem::path path = std::filesystem::absolute(executable_path).parent_path();
     
     //TEMP
-    std::filesystem::path data_file = path / "data/codeHighlight/cpp.txt";
-    m_interpreters.push_back(std::make_shared<CodeInterpreter>(FileHandler::parseCodeLanguageFile(data_file)));
+    std::filesystem::path data_folder = path / "data/codeHighlight";
+    std::vector<CodeHighlightInfo> infos = FileHandler::parseAllCodeLanguageFiles(data_folder);
+    for (const CodeHighlightInfo& info : infos) {
+        m_interpreters.push_back(std::make_shared<CodeInterpreter>(info));
+    }
 }
 
 InterpreterDispatcher& InterpreterDispatcher::instance(std::string executable_path) {
