@@ -1,3 +1,5 @@
+#include <algorithm>
+
 #include "../../../inc/Controller/Rendering/CodeInterpreter.hpp"
 #include "../../../inc/Shared/Utils/StringHelpers.hpp"
 
@@ -9,11 +11,19 @@ CodeInterpreter::CodeInterpreter(CodeHighlightInfo highlight_info):
     {}
 
 
+bool CodeInterpreter::contains(const std::vector<std::string>& vec, const std::string& target) {
+    if (m_highlight_info.m_ignore_case) {
+        return std::binary_search(vec.begin(), vec.end(), target, StringHelpers::caselessCompare);
+    }
+
+    return (std::binary_search(vec.begin(), vec.end(), target));
+}
+
 VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_role) {
     if (token.empty()) {
         goto makenormal;
     }
-    // should i end a comment
+    // IS END OF RANGED COMMENT
     for (auto pair : m_highlight_info.m_ranged_comments) {
         if (!m_ranged_comment_opener.has_value() || pair.first != *m_ranged_comment_opener) {
             continue;
@@ -27,22 +37,22 @@ VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_
         }
     }
     
-    // am i in a comment
+    // IS WITHIN COMMENT
     if (m_is_end_of_paragraph_comment || m_is_ranged_comment) {
         return makeComment(token);
     }
 
-    // should i start a rest of line comment
-    if (m_highlight_info.m_rest_of_line_comments.contains(token)) {
+    //  IS START OF REST OF LINE COMMENT
+    if (contains(m_highlight_info.m_rest_of_line_comments, token)) {
         m_is_end_of_paragraph_comment = true;
 
         return makeComment(token);
     }
 
-    // should i start a ranged comment
-    for (auto pair : m_highlight_info.m_ranged_comments) {
-        if (token.starts_with(pair.first)) {
-            m_ranged_comment_opener = pair.first;
+    // IS START OF RANGED COMMENT
+    for (auto [start, end] : m_highlight_info.m_ranged_comments) {
+        if (token.starts_with(start)) {
+            m_ranged_comment_opener = start;
             m_is_ranged_comment = true;
 
             return makeComment(token);
@@ -50,8 +60,8 @@ VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_
     }
 
     if (m_is_within_string && m_string_opener.has_value()) {
-        for (auto pair : m_highlight_info.m_string_indicators) {
-            if (!token.ends_with(pair.second)) {
+        for (auto [start, end] : m_highlight_info.m_string_indicators) {
+            if (!token.ends_with(end)) {
                 continue;
             }
 
@@ -62,14 +72,14 @@ VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_
         }
     }
 
-    for (auto pair : m_highlight_info.m_string_indicators) {
-        if (token == pair.first + pair.second) { // empty string
+    for (auto [start, end] : m_highlight_info.m_string_indicators) {
+        if (token == start + end) { // empty string
             return makeStringLiteral(token);
         }
 
-        if (token.starts_with(pair.first)) {
+        if (token.starts_with(start)) {
             m_is_within_string = true;
-            m_string_opener = pair.first;
+            m_string_opener = start;
 
             return makeStringLiteral(token);
         }
@@ -83,11 +93,11 @@ VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_
         return makeNumberLiteral(token);
     }
 
-    if (m_highlight_info.m_language_keywords.contains(token)) {
+    if (contains(m_highlight_info.m_language_keywords, token)) {
         return makeKeyword(token);
     }
 
-    if (m_highlight_info.m_language_builtins.contains(token)) {
+    if (contains(m_highlight_info.m_language_builtins, token)) {
         return makeBuiltin(token);
     }
 

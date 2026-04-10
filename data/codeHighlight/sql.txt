@@ -1,8 +1,9 @@
+ignore_case = true
 language_extensions = { .sql .ddl .dml }
 language_names { sql mysql pgsql sqlite }
 language_keywords = { and as assert async await break case class continue def del elif else except False finally for from global if import in is lambda match None nonlocal not or pass raise return True try type while with yield }
 language_builtins { BIGINT BINARY BIT BLOB BOOLEAN CHAR DATE DATETIME DECIMAL DOUBLE ENUM FLOAT INT INTEGER JSON LONGTEXT NVARCHAR REAL SMALLINT TEXT TIME TIMESTAMP VARBINARY VARCHAR ABS AVG CAST CEIL COALESCE CONCAT COUNT CURRENT_DATE CURRENT_TIME CURRENT_TIMESTAMP EXTRACT FLOOR LOWER MAX MIN NOW ROUND SUBSTRING SUM TRIM UPPER }
-string_indicators = { (",") (',') (`,`) }
+string_indicators = { (",") (',') }
 token_splitters = " (),.;=<>!+-*/%|"
 token_groups = { -- /* */}
 ranged_comment = { (/*,*/) }

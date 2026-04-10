@@ -1,3 +1,4 @@
+ignore_case = true
 language_extensions = { .asm .s }
 language_names {assembly asm x86 }
 language_keywords = { add and bits call cmp common cpu cqo default div extern global hlt idiv imul inc int ja jae jb jbe jc jcxz je jecx jg jge jl jle jmp jne jng jnge jnl jinle jno jnp jns jnz jo jp jpe jpo jrcxz js jz lea leave loop loope loopne loopnz loopz mov movsx movzx mul neg nop not or pop popad popfd push pushad pushfd ret rol ror sal sar sbb shl shr stc std sti sub syscall test xor}

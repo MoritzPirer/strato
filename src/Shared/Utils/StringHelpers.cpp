@@ -119,6 +119,15 @@ bool StringHelpers::caselessEquals(const std::string& a, const std::string& b) {
     return true;
 }
 
+bool StringHelpers::caselessCompare(const std::string& a, const std::string& b) {
+    return std::lexicographical_compare(
+        a.begin(), a.end(),
+        b.begin(), b.end(),
+        [](unsigned char a, unsigned char b) {
+            return std::tolower(a) < std::tolower(b);
+        });
+}
+
 std::optional<char> StringHelpers::firstNonSpace(const std::string& str) {
     size_t index = str.find_first_not_of(' ');
 

@@ -1,3 +1,4 @@
+ignore_case = # 'true' to match kewords and builtins to macht case-insensitive or 'false' to require case match (default false)
 language_extensions = { #all file extensions that should use this language file. Not case sensitive. should not conflict with other language files space seperated, including the dot, e.g. .hpp, .cpp }
 language_names = { #all names that identify this language in code blocks, not case sensitive. should not conflict with other language files. space seperated, e.g. cpp c++ cplusplus }
 language_keywords = { #all keywords the language defines, space seperated, case sensitive. e.g. while, if, define, float }

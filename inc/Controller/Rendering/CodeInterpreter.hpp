@@ -23,7 +23,8 @@ private:
     bool m_is_within_string;
     std::optional<std::string> m_string_opener;
     std::optional<std::string> m_ranged_comment_opener;
-
+    
+    bool contains(const std::vector<std::string>& vec, const std::string& target);
     VisualSegment makeComment(const std::string& token);
     VisualSegment makeNumberLiteral(const std::string& token);
     VisualSegment makeStringLiteral(const std::string& token);

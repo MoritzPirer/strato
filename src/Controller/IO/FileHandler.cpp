@@ -1,6 +1,7 @@
 #include <fstream>
 #include <filesystem>
 #include <functional>
+#include <algorithm>
 
 #include "../../../inc/Controller/IO/FileException.hpp"
 #include "../../../inc/Controller/IO/FileHandler.hpp"
@@ -120,11 +121,6 @@ namespace {
         return parsed;
     }
 
-    std::unordered_set<string> parseStringSet(const string& argument) {
-        auto vec = parseStringVector(argument);
-        return std::unordered_set<string>(vec.begin(), vec.end());
-    }
-
     string parseString(const string& argument) {
         size_t string_start = argument.find_first_of('"');
         if (string_start == string::npos || string_start == argument.length() - 1) {
@@ -137,6 +133,14 @@ namespace {
         }
 
         return argument.substr(string_start + 1, string_end - string_start - 1);
+    }
+
+    bool parseBool(const std::string& argument) {
+        if (argument.ends_with("true")) {
+            return true;
+        }
+
+        return false; // invalid input -> assume false
     }
 
     std::vector<std::pair<string, string>> parsePairVector(const std::string& argument) {
@@ -173,23 +177,41 @@ namespace {
         std::string keyword = full_line.substr(0, seperator);
         std::string argument = full_line.substr(seperator + 1);
 
+        if (keyword == "ignore_case") {
+            info.m_ignore_case = parseBool(argument);
+            return;
+        }
+
         if (keyword == "language_extensions") {
             info.m_file_extensions = parseStringVector(argument);
             return;
         }
 
         if (keyword == "language_names") {
-            info.m_language_names = parseStringSet(argument);
+            info.m_language_names = parseStringVector(argument);
             return;
         }
-
+        
         if (keyword == "language_keywords") {
-            info.m_language_keywords = parseStringSet(argument);
+            info.m_language_keywords = parseStringVector(argument);
+            if (info.m_ignore_case) {
+                std::sort(info.m_language_keywords.begin(), info.m_language_keywords.end(), StringHelpers::caselessCompare);
+            }
+            else {
+                std::sort(info.m_language_keywords.begin(), info.m_language_keywords.end());
+            }
             return;
         }
 
         if (keyword == "language_builtins") {
-            info.m_language_builtins = parseStringSet(argument);
+            info.m_language_builtins = parseStringVector(argument);
+            if (info.m_ignore_case) {
+                std::sort(info.m_language_builtins.begin(), info.m_language_builtins.end(), StringHelpers::caselessCompare);
+            }
+            else {
+                std::sort(info.m_language_builtins.begin(), info.m_language_builtins.end());
+            }
+            return;
             return;
         }
 
@@ -214,7 +236,7 @@ namespace {
         }
 
         if (keyword == "rest_of_line_comment") {
-            info.m_rest_of_line_comments = parseStringSet(argument);
+            info.m_rest_of_line_comments = parseStringVector(argument);
             return;
         }
         
@@ -244,7 +266,7 @@ namespace {
         string line;
 
         while (getline(input_file, line)) {
-        parseArgument(line, info); 
+            parseArgument(line, info); 
         }
 
         input_file.close();
