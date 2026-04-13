@@ -122,17 +122,12 @@ namespace {
     }
 
     string parseString(const string& argument) {
-        size_t string_start = argument.find_first_of('"');
-        if (string_start == string::npos || string_start == argument.length() - 1) {
+        size_t string_start = argument.find_first_of(' ') + 1;
+        if (string_start == string::npos || string_start >= argument.length()) {
             return "";
         }
 
-        size_t string_end = argument.find_last_of('"');
-        if (string_end == string_start) {
-            return "";
-        }
-
-        return argument.substr(string_start + 1, string_end - string_start - 1);
+        return argument.substr(string_start);
     }
 
     bool parseBool(const std::string& argument) {
@@ -166,6 +161,22 @@ namespace {
         }
 
         return result;
+    }
+
+    bool parseIsActive(const std::string& full_line) {
+        size_t seperator = full_line.find_first_of(' ');
+        if (seperator == std::string::npos) {
+            return false;
+        }
+
+        std::string keyword = full_line.substr(0, seperator);
+        std::string argument = full_line.substr(seperator + 1);
+
+        if (keyword == "is_active") {
+            return parseBool(argument);
+        }
+
+        return false; // unless specified, language is not active
     }
 
     void parseArgument(const std::string& full_line, CodeHighlightInfo& info) {
@@ -212,7 +223,6 @@ namespace {
                 std::sort(info.m_language_builtins.begin(), info.m_language_builtins.end());
             }
             return;
-            return;
         }
 
         if (keyword == "string_indicators") {
@@ -248,12 +258,11 @@ namespace {
         throw std::logic_error("unknown keyword: " + keyword);
     }
 
-    CodeHighlightInfo parseCodeLanguageFile(std::filesystem::path file_path) {
+    std::optional<CodeHighlightInfo> parseCodeLanguageFile(std::filesystem::path file_path) {
         std::filesystem::path absolute = std::filesystem::absolute(file_path);
         if (!std::filesystem::exists(absolute)) {
-            throw std::logic_error("Path does not exist: " + absolute.string() + 
-                " | Current WorkDir: " + std::filesystem::current_path().string());
-            // return CodeHighlightInfo();
+            //throw std::logic_error("Path does not exist: " + absolute.string() + " | Current WorkDir: " + std::filesystem::current_path().string());
+            return CodeHighlightInfo();
         }
         
         std::ifstream input_file(absolute);
@@ -265,7 +274,15 @@ namespace {
 
         string line;
 
+        bool reading_first_line = true;
         while (getline(input_file, line)) {
+            if (reading_first_line)[[unlikely]] {
+                if (parseIsActive(line) == false) {
+                    return std::nullopt;
+                }
+                reading_first_line = false;
+                continue;
+            }
             parseArgument(line, info); 
         }
 
@@ -365,7 +382,10 @@ std::vector<CodeHighlightInfo> FileHandler::parseAllCodeLanguageFiles(std::files
                 continue;
             }
             
-            infos.push_back(parseCodeLanguageFile(entry.path()));
+            std::optional<CodeHighlightInfo> info = parseCodeLanguageFile(entry.path());
+            if (info.has_value()) {
+                infos.push_back(*info);
+            }
         }
 
         return infos;

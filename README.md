@@ -1,10 +1,11 @@
 # strato
-Strato is a commandline text editor, named after the stratosphere because it is the first step into the endless universe of commandline editors. It is intended as a stepping stone - the aim is:
+
+Strato is a commandline text editor, named after the stratosphere because it serves as the first step into the endless universe of commandline editors. It is intended as a stepping stone - the aim is:
 - being easy to get started for folks new to commandline editors
 - making it easy to get familiar with stratos command grammer to go from novice to experienced
 - making users familiar enough with modal editing to provide a smooth transition to editors with more complex grammars, such as vim or helix
 
-This readme is written for version 0.6.3.
+his readme is written for version 0.6.6.
 
 ## ARCHITECTURE
 
@@ -24,6 +25,12 @@ strato displays useful meta information about the file currently being edited:
 There are also several quality-of-life features to make using strato as smooth as possible. The text history system groups text into words when undoing them to make deleting larger sections of text or undoing large deletions faster. Additionally files are periodically backed up to a fixed location relative to the location of the executable. That way, you never lose more than five minuts of progress.
 
 > As of version 0.6.3, strato supports highlighting for headings, quote blocks, bold and italic in markdown files
+
+### USER CUSTOMIZATION
+
+As of version 0.6.6, strato can provide simple, token-based syntax highlighting in markdown code blocks and in files with extensions matching the code language. Some popular languages are already added, but users can add new languages at any time by adding a new file following the provided template.
+
+Color theme customization will be added in a future update.
 
 ## GETTING STARTED
 
@@ -109,20 +116,15 @@ What can it do, what can't it do, what will it be able to do soon
 
 **PLANNED FEATURES**
 1. Simple spell checking system
-2. auto-inserting bullet points / numberings / checkboxes
-3. a built-in help menu for easy learing of shortcuts
-4. basic syntax highlighting in markdown code blocks and code files for some languages (e.g. python, C, C++, Java)
-5. selection mode similar to vim's visual mode
-6. changing settings (e.g. line numbering, meta information display, UI color) at runtime
-7. Some level of ascii table support (details tbd)
-8. switching between multiple files
-9. hot loading if an opened file is changed by an external source (details tbd)
-10. Find and Search / Replace commands
+2. a built-in help menu for easy learing of shortcuts
+3. selection mode similar to vim's visual mode
+4. changing settings (e.g. line numbering, meta information display, UI color) at runtime
+5. Some level of ascii table support (details tbd)
+6. switching between multiple files
+7. hot loading if an opened file is changed by an external source (details tbd)
+8. Find and Search / Replace commands
+9. changing UI color
 
-**POTENTIAL FEATURES**
-1. vim-like macros
-2. prefixing some commands with a number to repeat them 
-3. split screen with multiple files
 
 **LIMITATIONS THAT WILL EXIST FOR THE FORSEEABLE FUTURE**
 - no unicode support (ascii only)

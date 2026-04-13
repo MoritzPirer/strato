@@ -45,7 +45,7 @@ shared_ptr<Interpreter> InterpreterDispatcher::getInterpreter(const std::string&
     }
 
     if (StringHelpers::containsOnly(after_indicator, ' ')) {
-        //only give out Markdown if withing code block
+        //only give out Markdown if within code block
         if (m_last_was_code_interpreter) {
             m_last_was_code_interpreter = false;
             return std::make_shared<MarkdownInterpreter>();

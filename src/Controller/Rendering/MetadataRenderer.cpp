@@ -124,7 +124,7 @@ vector<VisualSegment> MetadataRenderer::getCursorPositionChunks() {
 
     return {
         {"Cursor position: ", TextRole::NORMAL_TEXT, TextStyle::makeNormal()},
-        {position.format(), TextRole::WEAK_HIGHLIGHT, TextStyle::makeItalic()}
+        {position.format(), TextRole::WEAK_HIGHLIGHT, TextStyle::makeBoldItalic()}
     };
 }
 

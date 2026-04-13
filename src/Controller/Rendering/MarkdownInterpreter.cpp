@@ -4,7 +4,7 @@
 #include "../../../inc/Shared/Utils/StringHelpers.hpp"
 
 MarkdownInterpreter::MarkdownInterpreter():
-    Interpreter("`*\\", std::vector<std::string>{"\\`, \\*, **"}),
+    Interpreter("`*\\", std::vector<std::string>{"\\`", "\\*", "**"}),
     m_current_style{TextStyle::makeNormal()},
     m_style_is_locked{false}
     {}

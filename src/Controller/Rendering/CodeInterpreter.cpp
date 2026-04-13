@@ -59,6 +59,7 @@ VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_
         }
     }
 
+    // IS END OF STRING
     if (m_is_within_string && m_string_opener.has_value()) {
         for (auto [start, end] : m_highlight_info.m_string_indicators) {
             if (!token.ends_with(end)) {
@@ -72,6 +73,7 @@ VisualSegment CodeInterpreter::parseToken(std::string token, TextRole paragraph_
         }
     }
 
+    // IS START OF STRING
     for (auto [start, end] : m_highlight_info.m_string_indicators) {
         if (token == start + end) { // empty string
             return makeStringLiteral(token);

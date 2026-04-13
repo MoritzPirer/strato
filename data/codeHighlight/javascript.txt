@@ -1,10 +1,11 @@
+is_active = true
 ignore_case = false
 language_extensions = { .js .mjs .cjs }
 language_names = { javascript js } 
 language_keywords = { as asynch await break case catch class const continue debugger default delete do else export extends finally for function from get if import in instanceof new return super switch this throw try typeof var void while with yield await enum let static implements interface package private protected public set static super switch this throw try typeof var void while with yield}
 language_builtins = { AbortController AbortSignal AggregateError alert arguments Array ArrayBuffer AsyncFunction AsyncIterator Atomics BigInt BigInt64Array BigUint64Array Blob Boolean Buffer cancelAnimationFrame clearImmediate clearInterval clearTimeout confirm console crypto CustomEvent DataView Date decodeURI decodeURIComponent document Duration encodeURI encodeURIComponent Error eval Event EventTarget exports false fetch File FileReader FinalizationRegistry Float32Array Float64Array FormData Function Generator GeneratorFunction global globalThis Headers history HTMLCollection HTMLElement Infinity Instant Int16Array Int32Array Int8Array Intl IntersectionObserver isFinite isNaN Iterator JSON localStorage location Map Math module MutationObserver NaN navigator NodeList Notification null Number Object parseFloat parseInt performance PlainDate PlainTime process Promise prompt Proxy queueMicrotask RangeError ReferenceError Reflect RegExp requestAnimationFrame Request require ResizeObserver Response screen sessionStorage setImmediate setInterval setTimeout Set ShadowRoot SharedArrayBuffer String Symbol SyntaxError Temporal TextDecoder TextEncoder true TypeError Uint16Array Uint32Array Uint8Array Uint8ClampedArray undefined URIError URL URLSearchParams WeakMap WeakRef WeakSet WebAssembly WebSocket window Worker XMLHttpRequest ZonedDateTime __dirname __filename }
 string_indicators = { (",") (','), (`,`) } 
-token_splitters = " !()*+,-./:;<>=?[]{}|^~"
+token_splitters = ! ()*+,-./:;<>=?[]{}|^~"'`
 token_groups = { // /* */} 
 ranged_comment = { (/*,*/)}
 rest_of_line_comment = { // }
