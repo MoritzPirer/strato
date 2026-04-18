@@ -1,4 +1,5 @@
 #include <unordered_map>
+#include <format>
 #include <functional>
 
 #include "../../../inc/Controller/Parsing/CommandCreator.hpp"
@@ -71,6 +72,7 @@ ParseResult CommandCreator::generateActions(std::optional<CommandDetails> detail
 
         {Operator::UNDO, [&](CommandDetails) { return ParseResult{ModeType::TOOL_MODE, make_shared<UndoAction>()}; }},
         {Operator::REDO, [&](CommandDetails) { return ParseResult{ModeType::TOOL_MODE, make_shared<RedoAction>()}; }},
+        {Operator::HELP, [&](CommandDetails command_details) { return generateHelp(command_details); }}
     };
 
     if (details->operator_type == Operator::REPEAT) {
@@ -109,7 +111,8 @@ ParseResult CommandCreator::generateHint(CommandDetails details) {
         {Operator::MOVE_TO_FIND, "Enter a character to find!"},
         {Operator::CASE_SET_UPPER, "Enter a scope or range to set to uppercase!"},
         {Operator::CASE_SET_LOWER, "Enter a scope or range to set to lowercase!"},
-        {Operator::FILE_ACTION, "x to force quit, q to quit safely, Q to save and quit, s to save"}
+        {Operator::FILE_ACTION, "x to force quit, q to quit safely, Q to save and quit, s to save"},
+        {Operator::HELP, "Enter a character to get information about!"}
     }; 
     
     if (hints.contains(details.operator_type)) {
@@ -457,4 +460,95 @@ std::string CommandCreator::getAntiDelimiter(char delimiter) {
     }
 
     return "";
+}
+
+ParseResult CommandCreator::generateHelp(CommandDetails details) {
+
+    std::vector<std::string> message;
+    if (message.empty()) {
+        message.push_back(std::format("{} is not an operator.", *details.argument));
+    }
+
+    generateOperatorHelp(details, message);
+    generateScopeHelp(details, message);
+    generateRangeHelp(details, message);
+
+    return {std::nullopt, generateHelpAction(message)};
+}
+
+void CommandCreator::generateOperatorHelp(CommandDetails details, std::vector<std::string>& message) {
+    std::unordered_map<char, std::vector<std::string>> operator_helps = {
+        {'m', {"MOVE - expects a scope or range, moves the cursor to the end of that scope or range."}},
+        {'M', {"MOVE (REVERSE) - expects a scope or range,", "moves the cursor to the start of that scope or range."}},
+        {'n', {"NEXT - expects a scope or range, moves the cursor to the start of the next occurrence of that scope or range."}}, /////////
+        {'n', {"NEXT (REVERSE) - expects a scope or range,", "moves the cursor to the end of the previous occurrence of that scope or range."}}, /////////
+        {'?', {"HELP - provides information about the next character pressed."}},
+        {'e', {"ERASE - erases the character under the cursor."}},
+        {'E', {"ERASE - erases the character under the cursor, and enters TYPING MODE."}},
+        {'r', {"REPLACE - replaces the character under the cursor with the next character pressed."}},
+        {'t', {"TO LOWER - epxects a scope or range, changes that scope or range to be all-lowercase."}},
+        {'T', {"TO UPPER - epxects a scope or range, changes that scope or range to be all-uppercase."}},
+        {'u', {"UNDO - undoes the last modifying action. Movement and file actions cannot be undone."}},
+        {'U', {"REDO - re-does the most recently undone action.", "Making new changes after undoing clears the redoable actions."}},
+        {'i', {"INSERT - enters TYPING MODE."}},
+        {'o', {"OPEN PARAGRAPH - creates a new paragraph below the current one and moves the cursor to it.", "Switches to TYPING MODE."}},
+        {'O', {"OPEN PARAGRAPH (REVERSE) - creates a new paragraph above the current one and moves the cursor to it.", "Switches to TYPING MODE."}},
+        {'a', {"AT - expects a scope or range, moves the cursor to the end of that scope or range.", "Switches to TYPING MODE. Equivalent to MOVE + INSERT. (m<section>i)"}},
+        {'A', {"AT (REVERSE) - expects a scope or range, moves the cursor to the start of that scope or range.", "Switches to TYPING MODE. Equivalent to MOVE (REVERSE) + INSERT. (M<section>i)"}},
+        {'f', {"FIND - moves the cursor to the next occurence of the next character entered.", "If no such character exists, move to the end of the file."}},
+        {'F', {"FIND - moves the cursor to the previous occurence of the next character entered.", "If no such character exists, move to the start of the file."}},
+        {'h', {"moves the cursor one character left, or to the end of the previous line."}},
+        {'j', {"moves the cursor one line down, or to the end of the current line if already in the last line."}},
+        {'k', {"moves the cursor one line up, or to the start of the current line if already in the first line."}},
+        {'l', {"moves the cursor one character right, or to the start of the next line."}},
+        {'H', {"Equivalent to NEXT (REVERSE) with word scope (Nw)."}},
+        {'J', {"Equivalent to NEXT with paragraph scope (np)."}},
+        {'K', {"Equivalent to NEXT (REVERSE) with paragraph scope (Np)."}},
+        {'L', {"Equivalent to NEXT with word scope (nw)."}},
+        {'d', {"DELETE SECTION - expects a scope or range. That section of text is deleted."}},
+        {'D', {"DELETE UNTIL - deletes from the current cursor position to the next occurence of the next character entered."}},
+        {'c', {"CHANGE SECTION - expects a scope or range. That section of text is deleted.", "Switchers to TYPING MODE. Equivalent to DELETE SECTION + INSERT (d<section>i)"}},
+        {'C', {"CHANGE UNTIL - deletes from the current cursor position to the next occurence of the next character entered.",  "Switchers to TYPING MODE. Equivalent to DELETE UNTIL + INSERT (D<section>i)"}},
+
+
+        //dD, +- yY  !
+    };
+
+    if (operator_helps.contains(*details.argument)) {
+        message.push_back(std::format(
+            "{}: {}", 
+            *details.argument, operator_helps.at(*details.argument)
+        ));
+    }
+}
+
+void CommandCreator::generateScopeHelp(CommandDetails details, std::vector<std::string>& message) {
+    std::unordered_map<char, std::string> scope_helps = {
+        {'f', "the entire file"},
+        {'p', "the current paragraph"},
+        {'l', "the current line"},
+        {'e', "the current expression (ended by space)"},
+        {'w', "the current word (ended by space or special characters)"},
+    };
+
+    if (scope_helps.contains(*details.argument)) {
+        message.push_back(std::format(
+            "When used as a scope, {} the preceeding operator to {}.", 
+            *details.argument, scope_helps.at(*details.argument)
+        ));
+    }
+}
+
+std::shared_ptr<CompoundAction> CommandCreator::generateHelpAction(const std::vector<std::string>& message) {
+    ActionList list;
+    list.reserve(message.size());
+    for (const std::string& line : message) {
+        list.push_back(std::make_shared<NotifyAction>(line));
+    }
+
+    return std::make_shared<CompoundAction>(list);
+}
+
+void CommandCreator::generateRangeHelp(CommandDetails details, std::vector<std::string>& message) {
+
 }

@@ -200,6 +200,9 @@ void CommandParser::parseAsOperator(char input) {
         }},
         {'Y', {
             .operator_type = Operator::COPY_UNTIL
+        }},
+        {'?', {
+            .operator_type = Operator::HELP
         }}
 
     };
@@ -250,6 +253,7 @@ void CommandParser::parseAsParameter(char input) {
         {Operator::MOVE_TO_NEXT, parseScopeOrRange},
         {Operator::MOVE_TO_FIND, parseArgument},
         {Operator::FILE_ACTION, parseArgument},
+        {Operator::HELP, parseArgument},
     };
 
     if (parse_styles.contains(m_details->operator_type)) {

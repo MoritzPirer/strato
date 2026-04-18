@@ -47,6 +47,11 @@ private:
 
     ParseResult generateHint(CommandDetails details);
     std::string getAntiDelimiter(char delimiter);
+    ParseResult generateHelp(CommandDetails details);
+    void generateOperatorHelp(CommandDetails details, std::vector<std::string>& message);
+    void generateScopeHelp(CommandDetails details, std::vector<std::string>& message);
+    void generateRangeHelp(CommandDetails details, std::vector<std::string>& message);
+    std::shared_ptr<CompoundAction> generateHelpAction(const std::vector<std::string>& message);
 
 public:
     CommandCreator() = default;

@@ -1,2 +1,4 @@
 backups/*
 strato.dSYM/*
+Sample/*
+.vscode/*
